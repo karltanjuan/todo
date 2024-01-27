@@ -1,0 +1,26 @@
+.err-msg {
+    color: red;
+    font-size: 12px;
+    display: flex;
+}
+
+.error {
+    border: 1px solid red !important;
+}
+
+.datatable-wrapper {
+    margin-top: 50px;
+}
+
+.add-task-container label[for="image"] {
+    margin-top: -7px;
+}
+
+.logout {
+    margin-top: 46px;
+}
+
+footer {
+    position: relative;
+    margin-top: 500px;
+}
