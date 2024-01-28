@@ -20,6 +20,7 @@
 			<a class="navbar-brand" href="{{url('tasks')}}">
 				<span>1210 Service Inc.</span>
 			</a>
+			<h6 class="text-white">Welcome, {{auth()->user()->name}}</h6>
 		</div>
 	</nav>
 	

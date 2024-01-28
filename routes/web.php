@@ -27,9 +27,13 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Tasks Resource
 Route::resource('tasks', TaskController::class);
-Route::post('tasks/getTaskbyStatus', [TaskController::class, 'getTaskbyStatus'])->name('getTaskbyStatus');
-Route::post('tasks/updateStatus', [TaskController::class, 'updateStatus'])->name('updateStatus'); // Todo, On Progress, Done
-Route::post('tasks/updateState', [TaskController::class, 'updateState'])->name('updateState'); // Draft or Published
+Route::group(['prefix' => 'tasks'], function() {
+    Route::post('getTaskbyStatus', [TaskController::class, 'getTaskbyStatus'])->name('getTaskbyStatus');
+    Route::post('updateStatus', [TaskController::class, 'updateStatus'])->name('updateStatus'); // Todo, On Progress, Done
+    Route::post('updateState', [TaskController::class, 'updateState'])->name('updateState'); // Draft or Published
+    Route::post('trash', [TaskController::class, 'trash'])->name('trash'); // Draft or Published
+});
+
 
 
 

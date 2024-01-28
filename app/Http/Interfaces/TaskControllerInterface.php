@@ -19,4 +19,5 @@ interface TaskControllerInterface
     public function updateStatus(Request $request);
     public function updateState(Request $request);
     public function destroy(Task $task);
+    public function trash(Request $request);
 }

@@ -13,7 +13,7 @@
 <div class="container">
     <h2 class="mt-3">Tasks</h2>
     <a class="btn btn-primary" href="{{url('tasks/create')}}"><i class="fa-regular fa-plus"></i> Add Task</a>
-    <a class="btn btn-outline-danger" href="{{url('tasks/trash')}}"><i class="fa-regular fa-trash-can"></i> Trash Tasks </a>
+    {{-- <a class="btn btn-outline-danger" href="{{url('tasks/trash')}}"><i class="fa-regular fa-trash-can"></i> Trash</a> --}}
 
     <div class="row mt-5">
         <div class="col-md-2">
@@ -77,7 +77,7 @@
                         <a href="{{ url('tasks/' . $task->id . '/edit') }}" class="btn btn-outline-primary btn-sm btn-edit" id="btn-edit">
                             <i class="fa-regular fa-pen-to-square"></i>
                         </a>
-                        <a href="{{ url('tasks/destroy/' . $task->id) }}" class="btn btn-outline-danger btn-sm btn-edit" id="btn-edit">
+                        <a href="javascript:void(0)" data-id="{{$task->id}}" class="btn btn-outline-danger btn-sm btn-trash" id="btn-trash">
                             <i class="fa-regular fa-trash-can"></i>
                         </a>
 
@@ -167,7 +167,7 @@
                                         <a href="tasks/${val.id}/edit" class="btn btn-outline-primary btn-sm btn-edit" id="btn-edit">
                                             <i class="fa-regular fa-pen-to-square"></i>
                                         </a>
-                                        <a href="#" class="btn btn-outline-danger btn-sm btn-edit" id="btn-edit">
+                                        <a href="javascript:void(0)" data-id="${val.id}" class="btn btn-outline-danger btn-sm btn-trash" id="btn-trash">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </a>
                                     </td>
@@ -255,6 +255,32 @@
                 success: function(response) {
                     if (response.code == "200") {
                         alert('Publication state updated');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var result = JSON.parse(xhr.responseText)
+                    console.log(result)
+                }
+            })
+    });
+
+    $(document).on('click', '.btn-trash', function() {
+        let id           = $(this).data('id')
+
+        var formData = new FormData();
+            formData.append('_token', "{{ csrf_token() }}");
+            formData.append('id', parseInt(id));
+
+            $.ajax({
+                url: '{{ url('tasks/trash') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.code == "200") {
+                        alert(response.message);
+                        window.location.href = "{{url('/tasks')}}";
                     }
                 },
                 error: function(xhr, status, error) {

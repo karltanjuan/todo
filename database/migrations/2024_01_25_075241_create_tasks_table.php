@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('status');
             $table->tinyInteger('is_published');
             $table->tinyInteger('is_trashed');
-            $table->datetime('trash_date')->nullable(true);
+            $table->datetime('expired_at')->nullable(true);
             $table->timestamps();
 
             // Foreign key

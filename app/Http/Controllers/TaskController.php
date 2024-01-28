@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddTaskRequest;
@@ -14,6 +15,10 @@ class TaskController extends Controller implements TaskControllerInterface
     public function __construct()
     {
         $this->middleware('auth');
+
+        $task = Task::where('is_trashed', 1)
+        ->where('expired_at', '<=', Carbon::now()->subDays(30))
+        ->delete();
     }
 
     /**
@@ -24,6 +29,7 @@ class TaskController extends Controller implements TaskControllerInterface
     public function index()
     {
         $tasks = Task::where('user_id', auth()->user()->id)
+                     ->where('is_trashed', 0)
                      ->orderBy('title', 'asc')
                      ->orderBy('created_at', 'asc')
                      ->get();
@@ -39,6 +45,7 @@ class TaskController extends Controller implements TaskControllerInterface
     public function list()
     {
         $tasks = Task::where('user_id', auth()->user()->id)
+                     ->where('is_trashed', 0)
                      ->orderBy('title', 'asc')
                      ->orderBy('created_at', 'desc')
                      ->get();
@@ -57,6 +64,7 @@ class TaskController extends Controller implements TaskControllerInterface
         }
 
         $tasks = $tasks->where('user_id', auth()->user()->id)
+                       ->where('is_trashed', 0)
                        ->orderBy('title', 'asc')
                        ->orderBy('created_at', 'asc')
                        ->get();
@@ -279,12 +287,29 @@ class TaskController extends Controller implements TaskControllerInterface
      */
     public function destroy(Task $task)
     {
-        // $task->delete();
+       
+    }
+
+    /**
+     * Trash the specified resource from storage.
+     *
+     * @param  \App\Models\Task  $task
+     * @return \Illuminate\Http\Response
+     */
+    public function trash(Request $request)
+    {
+        $task = Task::where('user_id', auth()->user()->id)
+                    ->where('id', $request->input('id'))
+                    ->first();
 
         if (!$task) {
-            return response()->json(['status' => 0]);
+        return response()->json(['message' => 'Task not found or does not belong to the authenticated user'], 404);
         }
 
-        return response()->json(['status' => 1]);
+        $task->is_trashed = 1;
+        $task->expired_at = Carbon::now()->addDays(30)->toDateString();
+        $task->save();
+
+        return response()->json(['message' => 'Task was moved to trash', 'code' => 200]);
     }
 }

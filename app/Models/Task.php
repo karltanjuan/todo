@@ -22,7 +22,7 @@ class Task extends Model
         'status',
         'is_published',
         'is_trashed',
-        'trash_date'
+        'expired_at'
     ];
 
     public function user()
